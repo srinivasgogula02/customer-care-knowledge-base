@@ -1,0 +1,42 @@
+[
+  {
+    "category": "Internet",
+    "issue": "Internet is working but very slow.",
+    "resolution": "Asked customer to restart the router. If issue persists, check for background downloads or bandwidth hogging devices. Scheduled a technician visit as optimization didn't help."
+  },
+  {
+    "category": "Internet",
+    "issue": "No internet connection.",
+    "resolution": "Verified account status is active. Guided user to power cycle the modem. Connection restored."
+  },
+  {
+    "category": "Billing",
+    "issue": "Charged double for the subscription this month.",
+    "resolution": "Investigated the billing history. Found a duplicate transaction. Initiated a refund for the extra amount. Apologized for the inconvenience."
+  },
+  {
+    "category": "Billing",
+    "issue": "Did not receive invoice for last month.",
+    "resolution": "Checked email on file. Resent the invoice to the registered email address. Confirmed receipt with customer."
+  },
+  {
+    "category": "Technical Support",
+    "issue": "Unable to login to the user portal.",
+    "resolution": "Reset the user's password and sent a temporary one. Advised to clear browser cache."
+  },
+  {
+    "category": "Technical Support",
+    "issue": "App crashes immediately after opening.",
+    "resolution": "Asked user to reinstall the app. Issue resolved after clean installation."
+  },
+  {
+    "category": "Hardware",
+    "issue": "Router lights are blinking red.",
+    "resolution": "Diagnosed as a line fault. Raised a ticket with the ISP partner. Expected resolution in 24 hours."
+  },
+  {
+    "category": "Account",
+    "issue": "Want to upgrade my plan.",
+    "resolution": "Explained available higher-tier plans. Processed the upgrade request to 'Pro' plan. Changes effective immediately."
+  }
+]
