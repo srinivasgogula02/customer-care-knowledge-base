@@ -33,3 +33,21 @@ def render_suggested_response(response_text):
     
     if st.button("Copy to Clipboard (Mock)"):
         st.toast("Response copied to clipboard!")
+
+def render_contribute_section():
+    st.header("Contribute to Knowledge Base")
+    st.markdown("Add a new resolved ticket to help improve future suggestions.")
+    
+    with st.form("contribute_form"):
+        col1, col2 = st.columns(2)
+        with col1:
+            category = st.selectbox("Category", ["Internet", "Billing", "Technical Support", "Hardware", "Account", "Other"])
+        with col2:
+            pass # Placeholder
+            
+        issue_raw = st.text_area("Issue Description (Raw)", height=100)
+        resolution_raw = st.text_area("Resolution Steps (Raw)", height=100)
+        
+        polish_btn = st.form_submit_button("Starndardize with AI")
+        
+    return category, issue_raw, resolution_raw, polish_btn

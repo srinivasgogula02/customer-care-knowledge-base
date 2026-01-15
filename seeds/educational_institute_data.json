@@ -1,0 +1,62 @@
+[
+    {
+        "category": "Payroll",
+        "issue": "My salary for this month has not been credited yet.",
+        "resolution": "Checked with the Finance Department. The bank transfer is processing and should reflect by end of day today. Please check your account tomorrow morning."
+    },
+    {
+        "category": "Payroll",
+        "issue": "There is a discrepancy in my tax deduction.",
+        "resolution": "Tax calculations were updated based on the new tax regime. Please refer to the HR circular sent last week. You can submit investment proofs via the ESS portal for recalculation."
+    },
+    {
+        "category": "Leave Management",
+        "issue": "Unable to apply for casual leave on the portal.",
+        "resolution": "The leave portal was under maintenance. It is now active. Please try again. If the issue persists, clear your browser cache."
+    },
+    {
+        "category": "Leave Management",
+        "issue": "How many earned leaves do I have remaining?",
+        "resolution": "You can check your leave balance on the Employee Self Service (ESS) dashboard under the 'Leaves' tab. As of now, our records show 12 earned leaves."
+    },
+    {
+        "category": "IT Support",
+        "issue": "Projector in Room 304 is not working.",
+        "resolution": "IT technician visited Room 304. Replaced the HDMI cable. Projector is now functional."
+    },
+    {
+        "category": "IT Support",
+        "issue": "Cannot access the Learning Management System (LMS) from home.",
+        "resolution": "Verified VPN access. Please ensure you are connected to the institute VPN using your faculty credentials before accessing LMS remotely."
+    },
+    {
+        "category": "IT Support",
+        "issue": "My laptop battery is draining very fast.",
+        "resolution": "Since the device is under warranty, a replacement request has been raised with the vendor. Expected replacement in 2-3 business days."
+    },
+    {
+        "category": "HR",
+        "issue": "I need a employment bonafide certificate for a bank loan.",
+        "resolution": "Please submit a request via the HR portal under 'Documents'. The certificate will be generated and emailed to you within 24 hours."
+    },
+    {
+        "category": "HR",
+        "issue": "Update my emergency contact details.",
+        "resolution": "Updated the emergency contact information in the central database as per your email request."
+    },
+    {
+        "category": "Administration",
+        "issue": "The air conditioning in the faculty lounge is not cooling.",
+        "resolution": "Maintenance team has been notified. They will service the AC unit today between 2 PM and 4 PM."
+    },
+    {
+        "category": "Administration",
+        "issue": "Need to book the conference hall for a guest lecture.",
+        "resolution": "Conference hall booked for 15th Oct, 10 AM to 12 PM. Confirmation email sent with booking ID #CH-2023-89."
+    },
+    {
+        "category": "Library",
+        "issue": "Requesting access to IEEE Xplore digital library.",
+        "resolution": "Your account has been activated for IEEE Xplore. Use your institute email ID to login via the library portal."
+    }
+]

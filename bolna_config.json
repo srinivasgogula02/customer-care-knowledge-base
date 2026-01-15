@@ -19,7 +19,7 @@
         "param": {
             "query": "%(query)s"
         },
-        "url": "https://YOUR_NGROK_URL/search",
+        "url": "https://config-attending-tiger-install.trycloudflare.com/search",
         "headers": {
             "Content-Type": "application/json"
         }
