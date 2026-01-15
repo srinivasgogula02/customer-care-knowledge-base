@@ -1,0 +1,27 @@
+{
+    "name": "consult_knowledge_base",
+    "description": "Use this tool to search the customer care knowledge base for similar past issues and solutions. This is useful when the user has a technical problem that you need to troubleshoot.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "query": {
+                "type": "string",
+                "description": "The customer's specific issue description, e.g., 'My internet is slow' or 'Router not powering on'."
+            }
+        },
+        "required": [
+            "query"
+        ]
+    },
+    "key": "custom_task",
+    "value": {
+        "method": "GET",
+        "param": {
+            "query": "%(query)s"
+        },
+        "url": "https://YOUR_NGROK_URL/search",
+        "headers": {
+            "Content-Type": "application/json"
+        }
+    }
+}

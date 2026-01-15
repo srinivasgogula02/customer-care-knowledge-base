@@ -5,3 +5,5 @@ scikit-learn
 python-dotenv
 numpy
 pinecone
+fastapi
+uvicorn
