@@ -23,3 +23,25 @@ def load_tickets(filepath: str) -> List[Dict]:
         except json.JSONDecodeError:
             print(f"Error: Failed to decode JSON from {filepath}")
             return []
+
+def save_new_ticket(filepath: str, new_ticket: Dict) -> bool:
+    """
+    Appends a new ticket to the JSON file.
+    
+    Args:
+        filepath: Path to the JSON file.
+        new_ticket: Dictionary containing the new ticket data.
+        
+    Returns:
+        True if successful, False otherwise.
+    """
+    tickets = load_tickets(filepath)
+    tickets.append(new_ticket)
+    
+    try:
+        with open(filepath, 'w') as f:
+            json.dump(tickets, f, indent=2)
+        return True
+    except Exception as e:
+        print(f"Error saving ticket: {e}")
+        return False

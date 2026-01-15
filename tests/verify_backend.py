@@ -6,6 +6,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from src.models import load_tickets
 from src.logic import generate_embeddings, find_similar_tickets, generate_answer
+from src.pinecone_service import PineconeService
 
 def test_backend():
     print("Testing Backend Logic...")
@@ -24,6 +25,11 @@ def test_backend():
     corpus = [t['issue'] for t in tickets]
     embeddings = generate_embeddings(corpus)
     print(f"Embeddings shape: {embeddings.shape}")
+
+    # 2.5 Sync to Pinecone
+    print("Syncing to Pinecone...")
+    pc = PineconeService()
+    pc.upsert_tickets(tickets, embeddings)
 
     # 3. Search
     test_query = "My internet is very slow"

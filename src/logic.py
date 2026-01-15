@@ -1,9 +1,9 @@
 import os
 import numpy as np
 from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
 from groq import Groq
 from dotenv import load_dotenv
+from src.pinecone_service import PineconeService
 
 # Load environment variables
 load_dotenv()
@@ -36,25 +36,19 @@ def generate_embeddings(texts: list[str]):
 
 def find_similar_tickets(query: str, tickets: list[dict], embeddings: np.ndarray, top_k: int = 3):
     """
-    Finds the most similar tickets to the query.
+    Finds the most similar tickets to the query using Pinecone.
+    Note: 'tickets' and 'embeddings' args are kept for signature compatibility but used for fallback or init if needed.
     """
     model = get_model()
-    query_embedding = model.encode([query])
+    query_embedding = model.encode([query])[0]
     
-    # Calculate cosine similarity
-    similarities = cosine_similarity(query_embedding, embeddings)[0]
-    
-    # Get top k indices
-    top_indices = np.argsort(similarities)[-top_k:][::-1]
-    
-    results = []
-    for idx in top_indices:
-        results.append({
-            "ticket": tickets[idx],
-            "score": similarities[idx]
-        })
-    
-    return results
+    # Use Pinecone
+    pc_service = PineconeService()
+    if pc_service.index:
+        return pc_service.search(query_embedding, top_k=top_k)
+    else:
+        print("Pinecone not available, returning empty results or falling back (not implemented).")
+        return []
 
 def generate_answer(query: str, similar_tickets: list[dict]):
     """
@@ -99,3 +93,38 @@ def generate_answer(query: str, similar_tickets: list[dict]):
         return chat_completion.choices[0].message.content
     except Exception as e:
         return f"Error communicating with Groq API: {str(e)}"
+
+def polish_ticket_content(issue: str, resolution: str):
+    """
+    Uses the LLM to rewrite the issue and resolution to be clear and professional.
+    Returns a tuple (polished_issue, polished_resolution).
+    """
+    if not client:
+        return issue, resolution
+
+    prompt = (
+        "You are a helpful assistant. Rewrite the following customer support ticket data to be clear, concise, and professional.\n"
+        "Do not change the meaning. Return the result in a valid JSON format with keys 'issue' and 'resolution'.\n\n"
+        f"Original Issue: {issue}\n"
+        f"Original Resolution: {resolution}\n"
+    )
+
+    try:
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            model="llama-3.3-70b-versatile",
+            response_format={"type": "json_object"},
+            temperature=0.3,
+        )
+        content = chat_completion.choices[0].message.content
+        import json
+        data = json.loads(content)
+        return data.get("issue", issue), data.get("resolution", resolution)
+    except Exception as e:
+        print(f"Error polishing ticket: {e}")
+        return issue, resolution
