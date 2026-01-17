@@ -147,60 +147,31 @@ def process_pdf_text(file_obj):
 
 def extract_tickets_from_text(text: str):
     """
-    Uses Groq to parse raw text into a list of ticket objects (issue, resolution).
+    Chunks raw text into sliding window segments without using LLM.
+    Returns a list of dicts with 'issue' set to the chunk content.
     """
-    if not client:
-        return []
-
-    # Chunking strategy: Process text in segments of ~15,000 characters
-    chunk_size = 15000
-    overlap = 1000
     tickets = []
     
-    start = 0
+    # Raw chunking config
+    # 3000 chars is roughly 750 tokens, good for retrieval context
+    chunk_size = 3000  
+    overlap = 500
+    
     text_len = len(text)
-
+    start = 0
+    
     while start < text_len:
-        end = start + chunk_size
-        chunk = text[start:end]
+        end = min(start + chunk_size, text_len)
+        chunk = text[start:end].strip()
         
-        # Adjust start for next loop (overlap)
+        if chunk:
+            tickets.append({
+                "issue": chunk,
+                "resolution": "Content from source document.",
+                "category": "Document Content"
+            })
+            
         start += (chunk_size - overlap)
         
-        prompt = (
-            "You are an expert data extractor. Analyse the following document text and extract all specific "
-            "Issue-Resolution pairs or Question-Answer pairs that would be useful for a customer support knowledge base.\n"
-            "Return the output as a JSON object with a single key 'tickets' which is a list of objects. "
-            "Each object must have 'issue' and 'resolution' keys.\n"
-            "If the text describes a policy, frame the policy points as 'How do I...' or 'What is the policy for...' questions.\n"
-            "Do not include generic chatter.\n\n"
-            f"Document Text Chunk:\n{chunk}\n"
-        )
-
-        try:
-            chat_completion = client.chat.completions.create(
-                messages=[
-                    {
-                        "role": "system",
-                        "content": "You are a helpful API that outputs strictly JSON.",
-                    },
-                    {
-                        "role": "user",
-                        "content": prompt,
-                    }
-                ],
-                model="llama-3.3-70b-versatile",
-                response_format={"type": "json_object"},
-                temperature=0.1,
-            )
-            content = chat_completion.choices[0].message.content
-            data = json.loads(content)
-            chunk_tickets = data.get("tickets", [])
-            tickets.extend(chunk_tickets)
-            print(f"Extracted {len(chunk_tickets)} tickets from chunk.")
-        except Exception as e:
-            print(f"Error extracting tickets from PDF chunk: {e}")
-            # Continue to next chunk even if one fails
-            continue
-
+    print(f"Split document into {len(tickets)} raw chunks.")
     return tickets

@@ -25,44 +25,38 @@ def create_dummy_pdf():
     return None
 
 def test_groq_extraction():
-    print("Testing Groq Extraction with Large Text (Chunking Check)...")
+    print("Testing Raw Chunking Logic...")
     
-    # Create a string larger than 15000 chars
-    # We will put one ticket at the start and one at the very end (approx 40k chars away)
-    filler = "This is filler text to test the chunking mechanism. " * 2000 # ~100k chars
+    chunk_size = 3000
+    overlap = 500
     
-    sample_text = f"""
-    POLICY PART 1
-    Q: What is the start policy?
-    A: It starts here.
+    # Create text that creates exactly 2 chunks
+    # Chunk 1: 0-3000
+    # Next start: 2500. 
+    # So if text is 3500 chars long:
+    # 1. 0-3000
+    # 2. 2500-3500
     
-    {filler}
-    
-    POLICY PART 2
-    Q: What is the end policy?
-    A: It ends here.
-    """
-    
-    print(f"Total Text Length: {len(sample_text)}")
+    sample_text = "A" * 3500
     
     tickets = extract_tickets_from_text(sample_text)
-    print(f"Extracted {len(tickets)} tickets.")
+    print(f"Extracted {len(tickets)} chunks.")
     
-    found_start = False
-    found_end = False
-    
-    for t in tickets:
-        print(f"Issue: {t['issue']}")
-        if "start policy" in t['issue']:
-            found_start = True
-        if "end policy" in t['issue']:
-            found_end = True
-        print("-" * 20)
-
-    if found_start and found_end:
-        print("SUCCESS: Both start and end tickets extracted!")
+    if len(tickets) == 2:
+        print("SUCCESS: Correct number of chunks.")
     else:
-        print(f"FAILURE: Start found: {found_start}, End found: {found_end}")
+        print(f"FAILURE: Expected 2 chunks, got {len(tickets)}")
+        
+    # Verify content
+    if tickets[0]['issue'] == "A" * 3000:
+        print("SUCCESS: Chunk 1 content correct.")
+    else:
+        print(f"FAILURE: Chunk 1 length {len(tickets[0]['issue'])}")
+
+    if tickets[1]['issue'] == "A" * 1000: # 3500 - 2500
+        print("SUCCESS: Chunk 2 content correct.")
+    else:
+        print("FAILURE: Chunk 2 content incorrect.")
 
 if __name__ == "__main__":
     test_groq_extraction()
