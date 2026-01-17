@@ -10,17 +10,27 @@ import json
 # Load environment variables
 load_dotenv()
 
+def get_secret(key: str) -> str:
+    """Get secret from st.secrets (Streamlit Cloud) or os.getenv (local)."""
+    try:
+        import streamlit as st
+        if key in st.secrets:
+            return st.secrets[key]
+    except:
+        pass
+    return os.getenv(key)
+
 # Initialize Groq client
-GROQ_API_KEY = os.getenv("groq_api_key")
+GROQ_API_KEY = get_secret("groq_api_key")
 if not GROQ_API_KEY:
     # Try alternate casing just in case
-    GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+    GROQ_API_KEY = get_secret("GROQ_API_KEY")
 
 client = None
 if GROQ_API_KEY:
     client = Groq(api_key=GROQ_API_KEY)
 else:
-    print("Warning: groq_api_key not found in environment variables.")
+    print("Warning: groq_api_key not found in environment or secrets.")
 
 # Global model variable to load only once
 _model = None

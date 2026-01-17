@@ -8,6 +8,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+def get_secret(key: str) -> str:
+    """Get secret from st.secrets (Streamlit Cloud) or os.getenv (local)."""
+    try:
+        import streamlit as st
+        if key in st.secrets:
+            return st.secrets[key]
+    except:
+        pass
+    return os.getenv(key)
+
 class PineconeService:
     _instance = None
     
@@ -21,9 +31,9 @@ class PineconeService:
         if self._initialized:
             return
             
-        self.api_key = os.getenv("pinecone_api")
+        self.api_key = get_secret("pinecone_api")
         if not self.api_key:
-            print("Error: pinecone_api key not found in environment.")
+            print("Error: pinecone_api key not found in environment or secrets.")
             self.index = None
             return
 
