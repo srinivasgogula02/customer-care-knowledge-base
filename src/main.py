@@ -133,40 +133,35 @@ def main():
 
         st.divider()
         st.subheader("Upload PDF Document")
-        st.info("Upload a PDF to automatically extract support Q&A pairs.")
+        st.info("Upload a PDF to store each page as a searchable entry.")
         
         uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
         if uploaded_file is not None:
             if st.button("Process PDF"):
-                with st.spinner("Extracting content from PDF (this may take a moment)..."):
-                    # 1. Extract text
-                    text = process_pdf_text(uploaded_file)
-                    if not text:
-                        st.error("Could not extract text from PDF.")
+                with st.spinner("Extracting pages from PDF..."):
+                    # 1. Extract pages (returns list of page dicts)
+                    pages = process_pdf_text(uploaded_file)
+                    if not pages:
+                        st.error("Could not extract any text from PDF. The file may be empty or image-based.")
                     else:
-                        # 2. Parse with Groq
-                        extracted_tickets = extract_tickets_from_text(text)
+                        # 2. Convert pages to tickets
+                        extracted_tickets = extract_tickets_from_text(pages)
                         
                         if not extracted_tickets:
-                            st.warning("No specific Q&A pairs found in the document.")
+                            st.warning("No content found in the document.")
                         else:
-                            st.success(f"Found {len(extracted_tickets)} potential items.")
+                            st.success(f"Extracted {len(extracted_tickets)} pages from document.")
                             
                             # 3. Save loop
                             success_count = 0
                             progress_bar = st.progress(0)
                             
                             topic = uploaded_file.name
-                            
-                            # Prepare for batch Pinecone update to save API calls/time if possible
-                            # But current logic.py/main.py does one by one. 
-                            # We will just do a loop for now as per "get it working" mode.
-                            
                             batch_tickets_for_pinecone = []
                             
                             for i, item in enumerate(extracted_tickets):
                                 new_ticket = {
-                                    "category": "Document Upload",
+                                    "category": "Document Page",
                                     "issue": item.get('issue'),
                                     "resolution": item.get('resolution'),
                                     "source": topic
@@ -174,9 +169,6 @@ def main():
                                 
                                 # Save locally
                                 if save_new_ticket(DATA_PATH, new_ticket):
-                                    # Generate embedding
-                                    # We can optimize this by batching embeddings too, but logic.py `generate_embeddings` takes a list.
-                                    # Let's collect them.
                                     batch_tickets_for_pinecone.append(new_ticket)
                                     success_count += 1
                                 
@@ -191,15 +183,14 @@ def main():
                                     # Upload to Pinecone
                                     try:
                                         PineconeService().upsert_tickets(batch_tickets_for_pinecone, embeddings_batch)
-                                        # Use session state to persist message across rerun
-                                        st.session_state.upload_status = f"Successfully added {success_count} content segments from '{topic}'!"
+                                        st.session_state.upload_status = f"Successfully added {success_count} pages from '{topic}'!"
                                         st.cache_resource.clear()
                                         st.rerun()
                                     except Exception as e:
                                         st.error(f"Saved locally but failed to sync to Pinecone: {e}")
                             else:
                                 if success_count == 0:
-                                    st.error("Failed to save extracted segments.")
+                                    st.error("Failed to save extracted pages.")
 
 if __name__ == "__main__":
     main()
