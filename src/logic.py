@@ -75,16 +75,16 @@ def generate_answer(query: str, similar_tickets: list[dict]):
         context_str += f"Issue: {ticket['issue']}\nResolution: {ticket['resolution']}\n---\n"
 
     system_prompt = (
-        "You are a helpful customer support assistant. "
-        "Use the following similar resolved tickets to suggest a resolution for the new issue. "
-        "If the similar tickets are not relevant, use your general knowledge but mention that you are doing so. "
-        "Be polite and professional."
+        "You are an HR knowledge assistant. Provide answers in this exact format:\n\n"
+        "**Short Answer:** [One concise sentence answering the question directly]\n\n"
+        "**Details:** [Additional relevant information, policy specifics, or steps if applicable]\n\n"
+        "Do NOT write emails or greetings. Be direct and factual. "
+        "Use the provided context to give accurate answers."
     )
 
     user_prompt = (
-        f"Context (Similar Past Tickets):\n{context_str}\n\n"
-        f"New Customer Issue:\n{query}\n\n"
-        "Suggested Response:"
+        f"Context from Knowledge Base:\n{context_str}\n\n"
+        f"Question: {query}"
     )
 
     try:
