@@ -134,90 +134,42 @@ def polish_ticket_content(issue: str, resolution: str):
 def process_pdf_text(file_obj):
     """
     Extracts text from a PDF file object.
+    Returns a list of page contents (one entry per page).
     """
     try:
         pdf = pypdf.PdfReader(file_obj)
-        text = ""
-        for page in pdf.pages:
+        pages = []
+        for i, page in enumerate(pdf.pages):
             page_text = page.extract_text()
-            if page_text:  # Handle None return from extract_text()
-                text += page_text + "\n"
-        return text.strip()
+            if page_text and page_text.strip():
+                pages.append({
+                    "page_num": i + 1,
+                    "content": page_text.strip()
+                })
+        print(f"Extracted {len(pages)} pages from PDF.")
+        return pages
     except Exception as e:
         print(f"Error reading PDF: {e}")
-        return ""
+        return []
 
-def extract_tickets_from_text(text: str):
+
+def extract_tickets_from_text(pages: list):
     """
-    Uses Groq LLM to extract Question-Answer pairs from document text.
-    Returns a list of dicts with 'issue' (question) and 'resolution' (answer).
+    Converts PDF pages to ticket format.
+    Each page becomes one searchable entry.
     """
-    # Validate input
-    if not text or not text.strip():
-        print("Warning: Empty or whitespace-only text passed to extract_tickets_from_text.")
+    if not pages:
         return []
     
-    if not client:
-        print("Error: Groq client not initialized.")
-        return []
-        
-    text = text.strip()
     tickets = []
+    for page in pages:
+        tickets.append({
+            "issue": page["content"],
+            "resolution": f"Page {page['page_num']} content.",
+            "category": "Document Page"
+        })
     
-    # Chunk document for processing (4000 chars for more context)
-    chunk_size = 4000
-    overlap = 500
-    text_len = len(text)
-    start = 0
-    
-    while start < text_len:
-        end = min(start + chunk_size, text_len)
-        chunk = text[start:end].strip()
-        start += (chunk_size - overlap)
-        
-        if not chunk:
-            continue
-            
-        prompt = (
-            "You are an expert at extracting FAQ and Q&A pairs from documents.\n\n"
-            "Analyze the following text and extract ONLY explicit Question-Answer pairs.\n"
-            "Look for patterns like 'Q:', 'Q.', 'Question:', or any clear question followed by its answer.\n"
-            "Also extract policy statements and convert them to Q&A format.\n\n"
-            "Rules:\n"
-            "- Each 'issue' should be a clear, concise QUESTION (not raw text)\n"
-            "- Each 'resolution' should be a clear, concise ANSWER\n"
-            "- Do NOT include raw paragraph text\n"
-            "- If no Q&A pairs exist in this chunk, return empty tickets array\n\n"
-            "Return JSON: {\"tickets\": [{\"issue\": \"question\", \"resolution\": \"answer\"}, ...]}\n\n"
-            f"Document Text:\n{chunk}"
-        )
-
-        try:
-            chat_completion = client.chat.completions.create(
-                messages=[
-                    {"role": "system", "content": "You are a helpful API that outputs strictly JSON."},
-                    {"role": "user", "content": prompt}
-                ],
-                model="llama-3.3-70b-versatile",
-                response_format={"type": "json_object"},
-                temperature=0.1,
-            )
-            content = chat_completion.choices[0].message.content
-            data = json.loads(content)
-            chunk_tickets = data.get("tickets", [])
-            
-            # Filter out any entries that look like raw chunks
-            for t in chunk_tickets:
-                issue = t.get('issue', '')
-                resolution = t.get('resolution', '')
-                # Only add if both fields are reasonable length and resolution isn't placeholder
-                if issue and resolution and len(issue) < 500 and resolution != "Content from source document.":
-                    tickets.append(t)
-                    
-            print(f"Extracted {len(chunk_tickets)} Q&A pairs from chunk.")
-        except Exception as e:
-            print(f"Error extracting from chunk: {e}")
-            continue
-
-    print(f"Total Q&A pairs extracted: {len(tickets)}")
+    print(f"Created {len(tickets)} entries (one per page).")
     return tickets
+
+
