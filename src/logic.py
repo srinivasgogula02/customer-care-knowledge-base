@@ -4,6 +4,8 @@ from sentence_transformers import SentenceTransformer
 from groq import Groq
 from dotenv import load_dotenv
 from src.pinecone_service import PineconeService
+import pypdf
+import json
 
 # Load environment variables
 load_dotenv()
@@ -128,3 +130,62 @@ def polish_ticket_content(issue: str, resolution: str):
     except Exception as e:
         print(f"Error polishing ticket: {e}")
         return issue, resolution
+
+def process_pdf_text(file_obj):
+    """
+    Extracts text from a PDF file object.
+    """
+    try:
+        pdf = pypdf.PdfReader(file_obj)
+        text = ""
+        for page in pdf.pages:
+            text += page.extract_text() + "\n"
+        return text
+    except Exception as e:
+        print(f"Error reading PDF: {e}")
+        return ""
+
+def extract_tickets_from_text(text: str):
+    """
+    Uses Groq to parse raw text into a list of ticket objects (issue, resolution).
+    """
+    if not client:
+        return []
+
+    # Chunking heavily recommended for large PDFs, but for this demo/MVP we'll truncate or send as is
+    # Let's truncate to ~20k chars (~5k tokens) to be safe with Llama 3 context window if needed, 
+    # though Llama 3 has 8k or 128k context depending on version. Versatile is usually 8k.
+    truncated_text = text[:25000]
+
+    prompt = (
+        "You are an expert data extractor. Analyse the following document text and extract all specific "
+        "Issue-Resolution pairs or Question-Answer pairs that would be useful for a customer support knowledge base.\n"
+        "Return the output as a JSON object with a single key 'tickets' which is a list of objects. "
+        "Each object must have 'issue' and 'resolution' keys.\n"
+        "If the text describes a policy, frame the policy points as 'How do I...' or 'What is the policy for...' questions.\n"
+        "Do not include generic chatter.\n\n"
+        f"Document Text:\n{truncated_text}\n"
+    )
+
+    try:
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a helpful API that outputs strictly JSON.",
+                },
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            model="llama-3.3-70b-versatile",
+            response_format={"type": "json_object"},
+            temperature=0.1,
+        )
+        content = chat_completion.choices[0].message.content
+        data = json.loads(content)
+        return data.get("tickets", [])
+    except Exception as e:
+        print(f"Error extracting tickets from PDF: {e}")
+        return []

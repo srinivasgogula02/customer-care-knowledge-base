@@ -91,7 +91,8 @@ class PineconeService:
             metadata = {
                 "category": ticket.get("category", "General"),
                 "issue": ticket.get("issue", ""),
-                "resolution": ticket.get("resolution", "")
+                "resolution": ticket.get("resolution", ""),
+                "source": ticket.get("source", "Manual")
             }
             
             # Handle numpy array if passed
@@ -150,3 +151,17 @@ class PineconeService:
         except Exception as e:
             print(f"Error searching Pinecone: {e}")
             return []
+
+    def delete_all_vectors(self) -> bool:
+        """Delete all vectors from the index."""
+        if not self.index:
+            print("Pinecone index not initialized, cannot delete.")
+            return False
+
+        try:
+            self.index.delete(delete_all=True)
+            print(f"All vectors deleted from index {self.index_name}.")
+            return True
+        except Exception as e:
+            print(f"Error deleting vectors: {e}")
+            return False

@@ -8,7 +8,7 @@ parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
 from src.models import load_tickets, save_new_ticket
-from src.logic import generate_embeddings, find_similar_tickets, generate_answer, polish_ticket_content
+from src.logic import generate_embeddings, find_similar_tickets, generate_answer, polish_ticket_content, process_pdf_text, extract_tickets_from_text
 import src.app_ui as ui
 from src.pinecone_service import PineconeService
 
@@ -74,6 +74,7 @@ def main():
             st.warning("Please enter an issue description.")
 
     with tab2:
+        st.subheader("Add Single Ticket")
         category, issue_raw, resolution_raw, polish_btn = ui.render_contribute_section()
         
         if 'polished_issue' not in st.session_state:
@@ -120,6 +121,76 @@ def main():
                     st.rerun()
                 else:
                     st.error("Failed to save ticket.")
+
+        st.divider()
+        st.subheader("Upload PDF Document")
+        st.info("Upload a PDF to automatically extract support Q&A pairs.")
+        
+        uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
+        if uploaded_file is not None:
+            if st.button("Process PDF"):
+                with st.spinner("Extracting content from PDF (this may take a moment)..."):
+                    # 1. Extract text
+                    text = process_pdf_text(uploaded_file)
+                    if not text:
+                        st.error("Could not extract text from PDF.")
+                    else:
+                        # 2. Parse with Groq
+                        extracted_tickets = extract_tickets_from_text(text)
+                        
+                        if not extracted_tickets:
+                            st.warning("No specific Q&A pairs found in the document.")
+                        else:
+                            st.success(f"Found {len(extracted_tickets)} potential items.")
+                            
+                            # 3. Save loop
+                            success_count = 0
+                            progress_bar = st.progress(0)
+                            
+                            topic = uploaded_file.name
+                            
+                            # Prepare for batch Pinecone update to save API calls/time if possible
+                            # But current logic.py/main.py does one by one. 
+                            # We will just do a loop for now as per "get it working" mode.
+                            
+                            batch_tickets_for_pinecone = []
+                            batch_embeddings = []
+                            
+                            for i, item in enumerate(extracted_tickets):
+                                new_ticket = {
+                                    "category": "Document Upload",
+                                    "issue": item.get('issue'),
+                                    "resolution": item.get('resolution'),
+                                    "source": topic
+                                }
+                                
+                                # Save locally
+                                if save_new_ticket(DATA_PATH, new_ticket):
+                                    # Generate embedding
+                                    # We can optimize this by batching embeddings too, but logic.py `generate_embeddings` takes a list.
+                                    # Let's collect them.
+                                    batch_tickets_for_pinecone.append(new_ticket)
+                                    success_count += 1
+                                
+                                progress_bar.progress((i + 1) / len(extracted_tickets))
+                                
+                            if batch_tickets_for_pinecone:
+                                with st.spinner("Generating embeddings and syncing to Pinecone..."):
+                                    # Generate all embeddings at once
+                                    corpus = [t['issue'] for t in batch_tickets_for_pinecone]
+                                    embeddings_batch = generate_embeddings(corpus)
+                                    
+                                    # Upload to Pinecone
+                                    try:
+                                        PineconeService().upsert_tickets(batch_tickets_for_pinecone, embeddings_batch)
+                                        st.success(f"Successfully added {success_count} tickets from '{topic}'!")
+                                        st.cache_resource.clear()
+                                        st.rerun()
+                                    except Exception as e:
+                                        st.error(f"Saved locally but failed to sync to Pinecone: {e}")
+                            else:
+                                if success_count == 0:
+                                    st.error("Failed to save extracted tickets.")
 
 if __name__ == "__main__":
     main()
