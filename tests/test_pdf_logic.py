@@ -25,23 +25,44 @@ def create_dummy_pdf():
     return None
 
 def test_groq_extraction():
-    print("Testing Groq Extraction...")
-    sample_text = """
-    POLICY FOR RETURNS
-    1. If the item is damaged, you can return it within 30 days.
-    2. Refunds are processed to the original payment method.
+    print("Testing Groq Extraction with Large Text (Chunking Check)...")
     
-    FAQ
-    Q: How do I reset my password?
-    A: Go to settings and click reset.
+    # Create a string larger than 15000 chars
+    # We will put one ticket at the start and one at the very end (approx 40k chars away)
+    filler = "This is filler text to test the chunking mechanism. " * 2000 # ~100k chars
+    
+    sample_text = f"""
+    POLICY PART 1
+    Q: What is the start policy?
+    A: It starts here.
+    
+    {filler}
+    
+    POLICY PART 2
+    Q: What is the end policy?
+    A: It ends here.
     """
+    
+    print(f"Total Text Length: {len(sample_text)}")
     
     tickets = extract_tickets_from_text(sample_text)
     print(f"Extracted {len(tickets)} tickets.")
+    
+    found_start = False
+    found_end = False
+    
     for t in tickets:
         print(f"Issue: {t['issue']}")
-        print(f"Resolution: {t['resolution']}")
+        if "start policy" in t['issue']:
+            found_start = True
+        if "end policy" in t['issue']:
+            found_end = True
         print("-" * 20)
+
+    if found_start and found_end:
+        print("SUCCESS: Both start and end tickets extracted!")
+    else:
+        print(f"FAILURE: Start found: {found_start}, End found: {found_end}")
 
 if __name__ == "__main__":
     test_groq_extraction()

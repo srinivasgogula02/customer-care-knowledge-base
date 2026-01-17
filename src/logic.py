@@ -152,40 +152,55 @@ def extract_tickets_from_text(text: str):
     if not client:
         return []
 
-    # Chunking heavily recommended for large PDFs, but for this demo/MVP we'll truncate or send as is
-    # Let's truncate to ~20k chars (~5k tokens) to be safe with Llama 3 context window if needed, 
-    # though Llama 3 has 8k or 128k context depending on version. Versatile is usually 8k.
-    truncated_text = text[:25000]
+    # Chunking strategy: Process text in segments of ~15,000 characters
+    chunk_size = 15000
+    overlap = 1000
+    tickets = []
+    
+    start = 0
+    text_len = len(text)
 
-    prompt = (
-        "You are an expert data extractor. Analyse the following document text and extract all specific "
-        "Issue-Resolution pairs or Question-Answer pairs that would be useful for a customer support knowledge base.\n"
-        "Return the output as a JSON object with a single key 'tickets' which is a list of objects. "
-        "Each object must have 'issue' and 'resolution' keys.\n"
-        "If the text describes a policy, frame the policy points as 'How do I...' or 'What is the policy for...' questions.\n"
-        "Do not include generic chatter.\n\n"
-        f"Document Text:\n{truncated_text}\n"
-    )
-
-    try:
-        chat_completion = client.chat.completions.create(
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are a helpful API that outputs strictly JSON.",
-                },
-                {
-                    "role": "user",
-                    "content": prompt,
-                }
-            ],
-            model="llama-3.3-70b-versatile",
-            response_format={"type": "json_object"},
-            temperature=0.1,
+    while start < text_len:
+        end = start + chunk_size
+        chunk = text[start:end]
+        
+        # Adjust start for next loop (overlap)
+        start += (chunk_size - overlap)
+        
+        prompt = (
+            "You are an expert data extractor. Analyse the following document text and extract all specific "
+            "Issue-Resolution pairs or Question-Answer pairs that would be useful for a customer support knowledge base.\n"
+            "Return the output as a JSON object with a single key 'tickets' which is a list of objects. "
+            "Each object must have 'issue' and 'resolution' keys.\n"
+            "If the text describes a policy, frame the policy points as 'How do I...' or 'What is the policy for...' questions.\n"
+            "Do not include generic chatter.\n\n"
+            f"Document Text Chunk:\n{chunk}\n"
         )
-        content = chat_completion.choices[0].message.content
-        data = json.loads(content)
-        return data.get("tickets", [])
-    except Exception as e:
-        print(f"Error extracting tickets from PDF: {e}")
-        return []
+
+        try:
+            chat_completion = client.chat.completions.create(
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are a helpful API that outputs strictly JSON.",
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt,
+                    }
+                ],
+                model="llama-3.3-70b-versatile",
+                response_format={"type": "json_object"},
+                temperature=0.1,
+            )
+            content = chat_completion.choices[0].message.content
+            data = json.loads(content)
+            chunk_tickets = data.get("tickets", [])
+            tickets.extend(chunk_tickets)
+            print(f"Extracted {len(chunk_tickets)} tickets from chunk.")
+        except Exception as e:
+            print(f"Error extracting tickets from PDF chunk: {e}")
+            # Continue to next chunk even if one fails
+            continue
+
+    return tickets
