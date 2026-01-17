@@ -86,20 +86,46 @@ def main():
         st.subheader("Add Single Ticket")
         category, issue_raw, resolution_raw, polish_btn = ui.render_contribute_section()
         
+        # Option to skip AI standardization
+        use_ai = st.checkbox("Standardize with AI before saving", value=True)
+        
         if 'polished_issue' not in st.session_state:
             st.session_state.polished_issue = ""
         if 'polished_resolution' not in st.session_state:
             st.session_state.polished_resolution = ""
-            
-        if polish_btn:
-            if issue_raw and resolution_raw:
-                with st.spinner("Polishing content with AI..."):
-                    p_issue, p_res = polish_ticket_content(issue_raw, resolution_raw)
-                    st.session_state.polished_issue = p_issue
-                    st.session_state.polished_resolution = p_res
-                st.rerun()
-            else:
-                st.warning("Please fill in both Issue and Resolution.")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            if polish_btn and use_ai:
+                if issue_raw and resolution_raw:
+                    with st.spinner("Polishing content with AI..."):
+                        p_issue, p_res = polish_ticket_content(issue_raw, resolution_raw)
+                        st.session_state.polished_issue = p_issue
+                        st.session_state.polished_resolution = p_res
+                    st.rerun()
+                else:
+                    st.warning("Please fill in both Issue and Resolution.")
+        
+        with col2:
+            # Direct save button (no AI)
+            if st.button("💾 Save Directly", disabled=use_ai):
+                if issue_raw and resolution_raw:
+                    new_ticket = {
+                        "category": category,
+                        "issue": issue_raw,
+                        "resolution": resolution_raw
+                    }
+                    try:
+                        new_embedding = generate_embeddings([new_ticket['issue']])
+                        PineconeService().upsert_tickets([new_ticket], new_embedding)
+                        st.success("Ticket saved to Pinecone!")
+                        st.cache_resource.clear()
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Failed to save: {e}")
+                else:
+                    st.warning("Please fill in both Issue and Resolution.")
                 
         if st.session_state.polished_issue:
             st.divider()
@@ -113,23 +139,16 @@ def main():
                     "issue": final_issue,
                     "resolution": final_resolution
                 }
-                if save_new_ticket(DATA_PATH, new_ticket):
-                    # Sync to Pinecone
-                    try:
-                        new_embedding = generate_embeddings([new_ticket['issue']])
-                        PineconeService().upsert_tickets([new_ticket], new_embedding)
-                    except Exception as e:
-                        st.error(f"Saved locally but failed to sync to Pinecone: {e}")
-                        
-                    st.success("Ticket saved successfully!")
-                    # Clear state
+                try:
+                    new_embedding = generate_embeddings([new_ticket['issue']])
+                    PineconeService().upsert_tickets([new_ticket], new_embedding)
+                    st.success("Ticket saved to Pinecone!")
                     st.session_state.polished_issue = ""
                     st.session_state.polished_resolution = ""
-                    # Clear cache to reload new data
                     st.cache_resource.clear()
                     st.rerun()
-                else:
-                    st.error("Failed to save ticket.")
+                except Exception as e:
+                    st.error(f"Failed to save: {e}")
 
         st.divider()
         st.subheader("Upload PDF Document")
