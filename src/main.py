@@ -84,20 +84,18 @@ def main():
 
     with tab2:
         st.subheader("Add Single Ticket")
-        category, issue_raw, resolution_raw, polish_btn = ui.render_contribute_section()
-        
-        # Option to skip AI standardization
-        use_ai = st.checkbox("Standardize with AI before saving", value=True)
+        category, issue_raw, resolution_raw, _ = ui.render_contribute_section()
         
         if 'polished_issue' not in st.session_state:
             st.session_state.polished_issue = ""
         if 'polished_resolution' not in st.session_state:
             st.session_state.polished_resolution = ""
         
+        # Two simple buttons side by side
         col1, col2 = st.columns(2)
         
         with col1:
-            if polish_btn and use_ai:
+            if st.button("✨ Standardize with AI", use_container_width=True):
                 if issue_raw and resolution_raw:
                     with st.spinner("Polishing content with AI..."):
                         p_issue, p_res = polish_ticket_content(issue_raw, resolution_raw)
@@ -108,8 +106,7 @@ def main():
                     st.warning("Please fill in both Issue and Resolution.")
         
         with col2:
-            # Direct save button (no AI)
-            if st.button("💾 Save Directly", disabled=use_ai):
+            if st.button("💾 Save Directly", use_container_width=True):
                 if issue_raw and resolution_raw:
                     new_ticket = {
                         "category": category,
@@ -119,9 +116,8 @@ def main():
                     try:
                         new_embedding = generate_embeddings([new_ticket['issue']])
                         PineconeService().upsert_tickets([new_ticket], new_embedding)
-                        st.success("Ticket saved to Pinecone!")
+                        st.success("✅ Saved to Pinecone!")
                         st.cache_resource.clear()
-                        st.rerun()
                     except Exception as e:
                         st.error(f"Failed to save: {e}")
                 else:
@@ -133,7 +129,7 @@ def main():
             final_issue = st.text_area("Polished Issue", value=st.session_state.polished_issue, height=100)
             final_resolution = st.text_area("Polished Resolution", value=st.session_state.polished_resolution, height=100)
             
-            if st.button("Save to Knowledge Base"):
+            if st.button("✅ Save Polished Version"):
                 new_ticket = {
                     "category": category,
                     "issue": final_issue,
@@ -142,11 +138,10 @@ def main():
                 try:
                     new_embedding = generate_embeddings([new_ticket['issue']])
                     PineconeService().upsert_tickets([new_ticket], new_embedding)
-                    st.success("Ticket saved to Pinecone!")
+                    st.success("✅ Saved to Pinecone!")
                     st.session_state.polished_issue = ""
                     st.session_state.polished_resolution = ""
                     st.cache_resource.clear()
-                    st.rerun()
                 except Exception as e:
                     st.error(f"Failed to save: {e}")
 
