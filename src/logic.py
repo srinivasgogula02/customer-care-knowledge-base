@@ -149,37 +149,75 @@ def process_pdf_text(file_obj):
 
 def extract_tickets_from_text(text: str):
     """
-    Chunks raw text into sliding window segments without using LLM.
-    Returns a list of dicts with 'issue' set to the chunk content.
+    Uses Groq LLM to extract Question-Answer pairs from document text.
+    Returns a list of dicts with 'issue' (question) and 'resolution' (answer).
     """
     # Validate input
     if not text or not text.strip():
         print("Warning: Empty or whitespace-only text passed to extract_tickets_from_text.")
         return []
+    
+    if not client:
+        print("Error: Groq client not initialized.")
+        return []
         
     text = text.strip()
     tickets = []
     
-    # Raw chunking config
-    # 1000 chars is roughly 250 tokens, better for granular search
-    chunk_size = 1000  
-    overlap = 200
-    
+    # Chunk document for processing (4000 chars for more context)
+    chunk_size = 4000
+    overlap = 500
     text_len = len(text)
     start = 0
     
     while start < text_len:
         end = min(start + chunk_size, text_len)
         chunk = text[start:end].strip()
-        
-        if chunk:
-            tickets.append({
-                "issue": chunk,
-                "resolution": "Content from source document.",
-                "category": "Document Content"
-            })
-            
         start += (chunk_size - overlap)
         
-    print(f"Split document into {len(tickets)} raw chunks.")
+        if not chunk:
+            continue
+            
+        prompt = (
+            "You are an expert at extracting FAQ and Q&A pairs from documents.\n\n"
+            "Analyze the following text and extract ONLY explicit Question-Answer pairs.\n"
+            "Look for patterns like 'Q:', 'Q.', 'Question:', or any clear question followed by its answer.\n"
+            "Also extract policy statements and convert them to Q&A format.\n\n"
+            "Rules:\n"
+            "- Each 'issue' should be a clear, concise QUESTION (not raw text)\n"
+            "- Each 'resolution' should be a clear, concise ANSWER\n"
+            "- Do NOT include raw paragraph text\n"
+            "- If no Q&A pairs exist in this chunk, return empty tickets array\n\n"
+            "Return JSON: {\"tickets\": [{\"issue\": \"question\", \"resolution\": \"answer\"}, ...]}\n\n"
+            f"Document Text:\n{chunk}"
+        )
+
+        try:
+            chat_completion = client.chat.completions.create(
+                messages=[
+                    {"role": "system", "content": "You are a helpful API that outputs strictly JSON."},
+                    {"role": "user", "content": prompt}
+                ],
+                model="llama-3.3-70b-versatile",
+                response_format={"type": "json_object"},
+                temperature=0.1,
+            )
+            content = chat_completion.choices[0].message.content
+            data = json.loads(content)
+            chunk_tickets = data.get("tickets", [])
+            
+            # Filter out any entries that look like raw chunks
+            for t in chunk_tickets:
+                issue = t.get('issue', '')
+                resolution = t.get('resolution', '')
+                # Only add if both fields are reasonable length and resolution isn't placeholder
+                if issue and resolution and len(issue) < 500 and resolution != "Content from source document.":
+                    tickets.append(t)
+                    
+            print(f"Extracted {len(chunk_tickets)} Q&A pairs from chunk.")
+        except Exception as e:
+            print(f"Error extracting from chunk: {e}")
+            continue
+
+    print(f"Total Q&A pairs extracted: {len(tickets)}")
     return tickets
