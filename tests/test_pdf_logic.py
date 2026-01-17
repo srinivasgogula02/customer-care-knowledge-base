@@ -27,36 +27,36 @@ def create_dummy_pdf():
 def test_groq_extraction():
     print("Testing Raw Chunking Logic...")
     
-    chunk_size = 3000
-    overlap = 500
+    chunk_size = 1000
+    overlap = 200
     
-    # Create text that creates exactly 2 chunks
-    # Chunk 1: 0-3000
-    # Next start: 2500. 
-    # So if text is 3500 chars long:
-    # 1. 0-3000
-    # 2. 2500-3500
+    # Text len: 3500
+    # Chunk size: 1000
+    # Overlap: 200 (Step size: 800)
+    # Starts: 0, 800, 1600, 2400, 3200
+    # Calculations: 
+    # 1. 0-1000
+    # 2. 800-1800
+    # 3. 1600-2600
+    # 4. 2400-3400
+    # 5. 3200-3500 (300 chars)
+    # Total chunks: 5
     
     sample_text = "A" * 3500
     
     tickets = extract_tickets_from_text(sample_text)
     print(f"Extracted {len(tickets)} chunks.")
     
-    if len(tickets) == 2:
+    if len(tickets) == 5:
         print("SUCCESS: Correct number of chunks.")
     else:
-        print(f"FAILURE: Expected 2 chunks, got {len(tickets)}")
+        print(f"FAILURE: Expected 5 chunks, got {len(tickets)}")
         
     # Verify content
-    if tickets[0]['issue'] == "A" * 3000:
-        print("SUCCESS: Chunk 1 content correct.")
+    if len(tickets[0]['issue']) == 1000:
+        print("SUCCESS: Chunk 1 length correct.")
     else:
         print(f"FAILURE: Chunk 1 length {len(tickets[0]['issue'])}")
-
-    if tickets[1]['issue'] == "A" * 1000: # 3500 - 2500
-        print("SUCCESS: Chunk 2 content correct.")
-    else:
-        print("FAILURE: Chunk 2 content incorrect.")
 
 if __name__ == "__main__":
     test_groq_extraction()

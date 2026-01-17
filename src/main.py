@@ -193,14 +193,14 @@ def main():
                                     try:
                                         PineconeService().upsert_tickets(batch_tickets_for_pinecone, embeddings_batch)
                                         # Use session state to persist message across rerun
-                                        st.session_state.upload_status = f"Successfully added {success_count} tickets from '{topic}'!"
+                                        st.session_state.upload_status = f"Successfully added {success_count} content segments from '{topic}'!"
                                         st.cache_resource.clear()
                                         st.rerun()
                                     except Exception as e:
                                         st.error(f"Saved locally but failed to sync to Pinecone: {e}")
                             else:
                                 if success_count == 0:
-                                    st.error("Failed to save extracted tickets.")
+                                    st.error("Failed to save extracted segments.")
 
 if __name__ == "__main__":
     main()

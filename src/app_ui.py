@@ -41,7 +41,7 @@ def render_contribute_section():
     with st.form("contribute_form"):
         col1, col2 = st.columns(2)
         with col1:
-            category = st.selectbox("Category", ["Internet", "Billing", "Technical Support", "Hardware", "Account", "Other"])
+            category = st.selectbox("Category", ["leaved",])
         with col2:
             pass # Placeholder
             

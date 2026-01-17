@@ -1,22 +1,23 @@
 import sys
 import os
 
-# Add src to path so we can import PineconeService
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
+# Add src to path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from pinecone_service import PineconeService
+from src.pinecone_service import PineconeService
 
-def main():
+def clear_index():
     print("Initializing Pinecone Service...")
-    service = PineconeService()
+    pc = PineconeService()
     
-    print("Clearing all vectors from index...")
-    success = service.delete_all_vectors()
-    
-    if success:
-        print("Successfully cleared all vectors.")
+    confirm = input("Are you sure you want to delete ALL vectors? (yes/no): ")
+    if confirm.lower() == 'yes':
+        if pc.delete_all_vectors():
+            print("Successfully cleared index.")
+        else:
+            print("Failed to clear index.")
     else:
-        print("Failed to clear vectors.")
+        print("Operation cancelled.")
 
 if __name__ == "__main__":
-    main()
+    clear_index()

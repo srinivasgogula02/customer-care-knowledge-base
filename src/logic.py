@@ -153,9 +153,9 @@ def extract_tickets_from_text(text: str):
     tickets = []
     
     # Raw chunking config
-    # 3000 chars is roughly 750 tokens, good for retrieval context
-    chunk_size = 3000  
-    overlap = 500
+    # 1000 chars is roughly 250 tokens, better for granular search
+    chunk_size = 1000  
+    overlap = 200
     
     text_len = len(text)
     start = 0
