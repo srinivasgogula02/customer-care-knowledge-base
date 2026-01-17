@@ -478,5 +478,281 @@
     "issue": "What happens if I don't receive confirmation for my leave application at ACIPL?",
     "resolution": "If you have applied for leave, please ensure your manager approves your leave before you go for the leave. If your leave remains unapproved on the system, it will be considered leave without pay or absent.",
     "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the leave policy for staff at ACIPL?",
+    "resolution": "The leave policy at ACIPL includes various types of leaves such as Earned Leave, Special Medical Leave, Maternity Leave, Paternity Leave, ESIC Sick Leave, ESIC Miscarriage Leave, Compensatory Leave, and Leave Without Pay.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "How do I apply for leave at ACIPL?",
+    "resolution": "Leaves can be applied for through the HfactoR portal, and the manager's approval is required for the leave to be sanctioned.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the eligibility for Earned Leave at ACIPL?",
+    "resolution": "Every staff employee is given a maximum of 30 days of earned leave credit for every completed year of service on a pro-rata basis.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "How do I encash my leaves at ACIPL?",
+    "resolution": "Annual leaves accumulated beyond 90 days can be encashed by giving an application to that effect, and the encashment will happen at the rate of the last drawn basic pay.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the policy for Special Medical Leave at ACIPL?",
+    "resolution": "Special Medical Leave can be availed when a prolonged leave is required to recover from illnesses, and it is mandatory to have an attachment of a doctor's certificate or consultation copy.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the policy for Maternity Leave at ACIPL?",
+    "resolution": "Maternity Leave is designed to support women employees per the Maternity Benefit Act, 1961 (amended 2017), and eligible women can take up to 26 weeks (182 days) of paid leave for up to 2 kids.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the policy for Paternity Leave at ACIPL?",
+    "resolution": "Married men with up to 2 kids can avail 3 days of paternity leave within 30 days (1 month) after childbirth, and a discharge certificate or letter from the hospital must be submitted as proof.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the policy for Leave Without Pay at ACIPL?",
+    "resolution": "Leave Without Pay can be applied for only if all other leaves have been exhausted, and the leave will be valid only upon approval from the manager.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "How do I access the Hfactor portal for leave application?",
+    "resolution": "The Hfactor portal can be accessed through the link: https://myportal.hfactor.app/hrsuite/#/login/allen",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "Whom do I contact for leave-related queries at ACIPL?",
+    "resolution": "The HRBP/Centre HR should be contacted for any leave-related queries.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the leave policy for staff at ACIPL?",
+    "resolution": "The leave policy at ACIPL includes various types of leaves such as Earned Leave, Special Medical Leave, Maternity Leave, Paternity Leave, ESIC Sick Leave, ESIC Miscarriage Leave, Compensatory Leave, and Leave Without Pay.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "How do I apply for leave at ACIPL?",
+    "resolution": "Leaves can be applied for through the HfactoR portal, and the manager's approval is required for the leave to be sanctioned.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the eligibility for Earned Leave at ACIPL?",
+    "resolution": "Every staff employee is given a maximum of 30 days of earned leave credit for every completed year of service on a pro-rata basis.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "How do I encash my leaves at ACIPL?",
+    "resolution": "Annual leaves accumulated beyond 90 days can be encashed by giving an application to that effect, and the encashment will happen at the rate of the last drawn basic pay.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the policy for Special Medical Leave at ACIPL?",
+    "resolution": "Special Medical Leave can be availed when a prolonged leave is required to recover from illnesses, and it is mandatory to have an attachment of a doctor's certificate or consultation copy.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the policy for Maternity Leave at ACIPL?",
+    "resolution": "Maternity Leave is designed to support women employees per the Maternity Benefit Act, 1961 (amended 2017), and they are entitled to 26 weeks (182 days) of paid leave for up to 2 kids.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the policy for Paternity Leave at ACIPL?",
+    "resolution": "Paternity Leave is available for married men with up to 2 kids, and they can avail 3 days of paternity leave within 30 days (1 month) after childbirth.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "How do I access the Hfactor portal for leave application?",
+    "resolution": "The Hfactor portal can be accessed through the link: https://myportal.hfactor.app/hrsuite/#/login/allen",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "Whom do I contact for leave-related queries at ACIPL?",
+    "resolution": "The HRBP/Centre HR should be contacted for any leave-related queries.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "Can I apply for half-day leave at ACIPL?",
+    "resolution": "No, leave application can only be for full day.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the policy for Leave Without Pay at ACIPL?",
+    "resolution": "Leave Without Pay can be availed only if all other leaves have been exhausted, and it requires approval from the manager.",
+    "source": "Leave Policy Staff.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "How do I apply for leave?",
+    "resolution": "Apply for leave through the HfactoR portal. Your manager will receive a notification and approve the leave.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the policy for privilege leaves?",
+    "resolution": "Confirmed employees have 24 earned leaves in a financial year. Employees on probation earn one leave at the beginning of each month.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "How do I access the Hfactor portal?",
+    "resolution": "Follow the link: https://myportal.hfactor.app/hrsuite/#/login/allen",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "Can I avail of maternity or paternity leave in tranches?",
+    "resolution": "No, maternity and paternity leaves cannot be availed in tranches.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "How will my leaves be credited during and after the probationary period?",
+    "resolution": "During probation, 1 leave is credited at the beginning of each month. After completion, remaining earned leaves are calculated on a pro-rata basis.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the policy for management leaves?",
+    "resolution": "Employees are eligible for 6 days of management leave in a financial year, credited after completion of the probationary period on a pro-rata basis.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "Can I encash my management leaves?",
+    "resolution": "No, management leaves cannot be encashed.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "How do I contact HR for leave-related queries?",
+    "resolution": "Contact the HRBP/Centre HR for any leave-related queries.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the policy for bereavement leave?",
+    "resolution": "6 days of bereavement leave can be availed in the event of the demise of a family member. It can be availed multiple times.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "Can I apply for a half-day leave?",
+    "resolution": "Yes, for some types of leave, half-day leave can be applied. Check the category to understand if half-day leave is available.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the policy for compensatory leave?",
+    "resolution": "Compensatory leave can be availed if work extends beyond working hours. It must be taken within 60 days of the day when additional work was done.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the policy for transfer leave?",
+    "resolution": "3 days of transfer leave can be availed when being transferred from one city to another.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the policy for leave without pay?",
+    "resolution": "Leave without pay can be availed only if all other leaves have been exhausted. It requires approval from the Head HR Operations.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "How do I avail of management leaves?",
+    "resolution": "Discuss them with your manager as only they can release your management leaves.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "Can management leaves be taken in tranches?",
+    "resolution": "Yes, but the maximum number of management leaves in a year cannot exceed 6 in total.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "Can management leaves be encashed?",
+    "resolution": "No, management leaves cannot be encashed.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What is the policy for bereavement leave?",
+    "resolution": "You are encouraged to avail bereavement leave each time you grieve the loss of a family member.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "I have applied for leave but have not received a confirmation yet. Can I still go ahead and take the leave?",
+    "resolution": "No, please ensure your manager approves your leave before you go for the leave. If your leave remains unapproved on the system, it will be considered leave without pay.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "When can I take 'Leave Without Pay'?",
+    "resolution": "In a financial year, if you end up exhausting all the leaves credited to you, you will be required to take leave without pay if necessary.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "When is 'Loss of Pay' applied?",
+    "resolution": "Failing to mark your presence on a workday and if it is not applied for regularisation on before 24th of any month, will result in loss of pay.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "Is it mandatory to take maternity leave 8 weeks before the date of delivery?",
+    "resolution": "No, it is not mandatory. You can choose to take your maternity leave any time before the date of delivery.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "What happens to my annual leaves between January to March of 2024?",
+    "resolution": "Annual Leave (AL) pro-rated till March end will be added to the new leave balance from 1st April, if not consumed already.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "How can I apply for special medical leave?",
+    "resolution": "You can apply for special medical leave when it is necessary to support you during your prolonged illness after exhausting all your other leave types. This leave type must be approved by your manager and Corporate HR once applied.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "Is special medical leave considered for the performance appraisal period?",
+    "resolution": "No, performance will be evaluated and rated only for the period during which you have actively contributed to the organization.",
+    "source": "Leave Policy Executive.pdf"
+  },
+  {
+    "category": "Document Upload",
+    "issue": "When can I encash my leave?",
+    "resolution": "Privilege leaves accumulated up to 60 days can be encashed at the time of retirement or separation (subject to completion of Notice period).",
+    "source": "Leave Policy Executive.pdf"
   }
 ]

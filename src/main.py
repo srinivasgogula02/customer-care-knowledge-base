@@ -41,9 +41,12 @@ def main():
     
     ui.render_header()
 
+    # Create a placeholder for messages so the component tree remains stable
+    msg_container = st.empty()
+
     # Check for success message from previous run (e.g. after PDF upload)
     if 'upload_status' in st.session_state and st.session_state.upload_status:
-        st.success(st.session_state.upload_status)
+        msg_container.success(st.session_state.upload_status)
         # Clear it so it doesn't show on subsequent unrelated reruns
         del st.session_state['upload_status']
     
