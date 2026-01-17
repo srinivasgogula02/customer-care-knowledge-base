@@ -35,6 +35,11 @@ def save_new_ticket(filepath: str, new_ticket: Dict) -> bool:
     Returns:
         True if successful, False otherwise.
     """
+    # Validate ticket has required fields
+    if not new_ticket or not new_ticket.get('issue'):
+        print("Error: Ticket must have an 'issue' field.")
+        return False
+        
     tickets = load_tickets(filepath)
     tickets.append(new_ticket)
     

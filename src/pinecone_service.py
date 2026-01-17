@@ -87,11 +87,15 @@ class PineconeService:
             # Generate ID
             ticket_id = self.generate_id(ticket)
             
-            # Prepare metadata
+            # Prepare metadata (truncate issue to avoid Pinecone 40KB limit)
+            issue_text = ticket.get("issue", "")
+            if len(issue_text) > 4000:
+                issue_text = issue_text[:4000] + "..."
+                
             metadata = {
                 "category": ticket.get("category", "General"),
-                "issue": ticket.get("issue", ""),
-                "resolution": ticket.get("resolution", ""),
+                "issue": issue_text,
+                "resolution": ticket.get("resolution", "")[:2000],  # Also truncate resolution
                 "source": ticket.get("source", "Manual")
             }
             
@@ -141,7 +145,8 @@ class PineconeService:
                 ticket = {
                     "issue": meta.get('issue', 'N/A'),
                     "resolution": meta.get('resolution', 'N/A'),
-                    "category": meta.get('category', 'General')
+                    "category": meta.get('category', 'General'),
+                    "source": meta.get('source', 'Manual')
                 }
                 formatted_results.append({
                     "ticket": ticket,

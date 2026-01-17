@@ -139,8 +139,10 @@ def process_pdf_text(file_obj):
         pdf = pypdf.PdfReader(file_obj)
         text = ""
         for page in pdf.pages:
-            text += page.extract_text() + "\n"
-        return text
+            page_text = page.extract_text()
+            if page_text:  # Handle None return from extract_text()
+                text += page_text + "\n"
+        return text.strip()
     except Exception as e:
         print(f"Error reading PDF: {e}")
         return ""
@@ -150,6 +152,12 @@ def extract_tickets_from_text(text: str):
     Chunks raw text into sliding window segments without using LLM.
     Returns a list of dicts with 'issue' set to the chunk content.
     """
+    # Validate input
+    if not text or not text.strip():
+        print("Warning: Empty or whitespace-only text passed to extract_tickets_from_text.")
+        return []
+        
+    text = text.strip()
     tickets = []
     
     # Raw chunking config

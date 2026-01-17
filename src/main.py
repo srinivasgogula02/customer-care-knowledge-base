@@ -163,7 +163,6 @@ def main():
                             # We will just do a loop for now as per "get it working" mode.
                             
                             batch_tickets_for_pinecone = []
-                            batch_embeddings = []
                             
                             for i, item in enumerate(extracted_tickets):
                                 new_ticket = {

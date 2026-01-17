@@ -41,13 +41,13 @@ def render_contribute_section():
     with st.form("contribute_form"):
         col1, col2 = st.columns(2)
         with col1:
-            category = st.selectbox("Category", ["leaved",])
+            category = st.selectbox("Category", ["General", "Account", "Billing", "Technical", "Policy", "Other"])
         with col2:
             pass # Placeholder
             
         issue_raw = st.text_area("Issue Description (Raw)", height=100)
         resolution_raw = st.text_area("Resolution Steps (Raw)", height=100)
         
-        polish_btn = st.form_submit_button("Starndardize with AI")
+        polish_btn = st.form_submit_button("Standardize with AI")
         
     return category, issue_raw, resolution_raw, polish_btn
