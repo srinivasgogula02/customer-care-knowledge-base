@@ -40,6 +40,12 @@ def main():
     st.set_page_config(page_title="Customer Care KB", layout="wide")
     
     ui.render_header()
+
+    # Check for success message from previous run (e.g. after PDF upload)
+    if 'upload_status' in st.session_state and st.session_state.upload_status:
+        st.success(st.session_state.upload_status)
+        # Clear it so it doesn't show on subsequent unrelated reruns
+        del st.session_state['upload_status']
     
     # Initialize KB
     with st.spinner("Loading Knowledge Base..."):
@@ -183,7 +189,8 @@ def main():
                                     # Upload to Pinecone
                                     try:
                                         PineconeService().upsert_tickets(batch_tickets_for_pinecone, embeddings_batch)
-                                        st.success(f"Successfully added {success_count} tickets from '{topic}'!")
+                                        # Use session state to persist message across rerun
+                                        st.session_state.upload_status = f"Successfully added {success_count} tickets from '{topic}'!"
                                         st.cache_resource.clear()
                                         st.rerun()
                                     except Exception as e:
